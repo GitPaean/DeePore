@@ -25,3 +25,5 @@ h=plt.hist(Data_Test[:,FN,0],50,histtype='step',density=True,label='testing')
 plt.ylabel('Frequency')
 plt.xlabel('Property #' +str(FN))
 plt.legend(loc='upper left')
+
+plt.show()

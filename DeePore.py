@@ -220,7 +220,7 @@ def prep(Data):
             if D>0:
                 pass
             else:
-                List=np.append(List,counter)
+                List=np.append(List,int(counter))
                 y[0:15]=np.log10(y[0:15]) # applying log10 to handle range of order of magnitudes
                 maxid=np.argwhere(y>MAX)
                 minid=np.argwhere(y<MIN)
@@ -234,6 +234,7 @@ def prep(Data):
             MAX[Singles+100*I:Singles+100*(I+1)]=np.max(MAX[Singles+100*I:Singles+100*(I+1)])
             MIN[Singles+100*I:Singles+100*(I+1)]=np.min(MIN[Singles+100*I:Singles+100*(I+1)])
     np.save('minmax.npy',[MIN,MAX])
+    List = [round(x) for x in List]
     return List
 
 def gener(batch_size,Data,List,MIN,MAX):
@@ -310,6 +311,8 @@ def trainmodel(DataName,TrainList,EvalList,retrain=0,reload=0,epochs=100,batch_s
     LogName='log_'+timestr+'_'+'Model'+str(ModelType)
     filepath=SaveName
     checkpoint = ModelCheckpoint(filepath, monitor='loss', verbose=1,save_freq=50, save_best_only=True, mode='min')
+    if not os.path.exists("Logs"):
+        os.makedirs("Logs")
     with open("Logs/"+LogName+".txt", "wt") as f:
         f.write('# Path to train file: \n')
         f.write(DataName +'\n')
@@ -562,7 +565,7 @@ def normal(A):
     A_min = np.min(A)
     return (A-A_min)/(np.max(A)-A_min) 
 def show_feature_maps(A):
-    N=np.ceil(np.sqrt(A.shape[0]))
+    N=int(np.ceil(np.sqrt(A.shape[0])))
     f=plt.figure(figsize=(N*10,N*10))
     for I in range(A.shape[0]):
         plt.subplot(N,N,I+1)
@@ -685,13 +688,13 @@ def showentry(A):
     # CM=plt.cm.plasma
     CM=plt.cm.viridis
     ax1=plt.subplot(1,3,1); plt.axis('off'); ax1.set_title('X mid-slice')
-    plt.imshow(np.squeeze(A[np.int(A.shape[0]/2), :,:]), cmap=CM, interpolation='nearest')
+    plt.imshow(np.squeeze(A[int(A.shape[0]/2), :,:]), cmap=CM, interpolation='nearest')
     # plt.colorbar(orientation="horizontal")
     ax2=plt.subplot(1,3,2); plt.axis('off'); ax2.set_title('Y mid-slice')
-    plt.imshow(np.squeeze(A[:,np.int(A.shape[1]/2), :]), cmap=CM, interpolation='nearest')
+    plt.imshow(np.squeeze(A[:,int(A.shape[1]/2), :]), cmap=CM, interpolation='nearest')
     # plt.colorbar(orientation="horizontal")
     ax3=plt.subplot(1,3,3); plt.axis('off'); ax3.set_title('Z mid-slice'); 
-    plt.imshow(np.squeeze(A[:,:,np.int(A.shape[2]/2)]), cmap=CM, interpolation='nearest')
+    plt.imshow(np.squeeze(A[:,:,int(A.shape[2]/2)]), cmap=CM, interpolation='nearest')
     # plt.colorbar(orientation="horizontal")        
     plt.savefig('images/First_entry.png')
 def parfor(func,values):
